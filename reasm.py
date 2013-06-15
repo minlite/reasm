@@ -1,7 +1,9 @@
 #!/usr/bin/python
 
 __author__ = 'miro'
-import sys, getopt
+import sys
+import getopt
+import re
 
 
 def main():
@@ -46,22 +48,26 @@ def main():
                     procString += readBuffer[j]
                 break
         readBuffer = procString
-        # 3. Try to remove the required number of spaces from the instructions...
-        procString = ""
-        p = 0
-        i = 0
-        while (i < len(readBuffer)-1):
-            if p == n:
-                procString += readBuffer[i]
-            elif readBuffer[i] is " ":
-                p += 1
-                while readBuffer[i] is " ":
-                    i += 1
-                i -= 1
-            i += 1
-        readBuffer = procString
-        # Thanks GOD... We have hopefully finished processing this line. Write the line to the target and get rid of it...
-        target.write(readBuffer + "\n")
+        if readBuffer[0] is "=":
+            # We should delete this whole line it's because it's invalid.
+            continue
+        if readBuffer[0] is "0":
+            # 3. Try to remove the required number of spaces from the instructions...
+            procString = ""
+            p = 0
+            i = 0
+            while i < len(readBuffer)-1:
+                if p == n:
+                    procString += readBuffer[i]
+                elif readBuffer[i] is " ":
+                    p += 1
+                    while readBuffer[i] is " ":
+                        i += 1
+                    i -= 1
+                i += 1
+            readBuffer = procString + "\n"
+        # Thank GOD...We have hopefully finished processing this line. Write the line to the target and get rid of it...
+        target.write(readBuffer)
 
 # Standard boilerplate to call the main() function to begin
 # the program.
